@@ -12,8 +12,8 @@ POST http://localhost:3000/auth/signup
 Content-Type: application/json
 
 {
-  "email": "kumaran@gmail.com",
-  "password": "kumaran"
+  "email": "sudha@gmail.com",
+  "password": "sudha"
 }
 
 ### update user

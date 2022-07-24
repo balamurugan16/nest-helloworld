@@ -3,6 +3,11 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
+/**
+ * Dependency injection steps for a service
+ *  1. create a class with @Injectable decorator
+ *  2. add the class in the provider's list of the module
+ */
 @Injectable()
 export class UsersService {
   constructor(
