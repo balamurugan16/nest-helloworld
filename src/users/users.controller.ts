@@ -14,6 +14,7 @@ import {
   Patch,
   Post,
   Query,
+  Session,
 } from '@nestjs/common';
 
 @Controller('auth')
@@ -30,8 +31,10 @@ export class UsersController {
   }
 
   @Post('/signin')
-  signin(@Body() body: CreateUserDTO) {
-    return this.authService.signin(body.email, body.password);
+  async signin(@Body() body: CreateUserDTO, @Session() session: any) {
+    const user = await this.authService.signin(body.email, body.password);
+    session.userId = user.id;
+    return user;
   }
 
   @Get('all-users')
