@@ -2,7 +2,6 @@ import { User } from '../user.entity';
 import { UsersService } from '../users.service';
 import { AuthService } from '../auth.service';
 import { Test } from '@nestjs/testing';
-import { BadRequestException } from '@nestjs/common';
 
 describe('AuthService', () => {
   let service: AuthService;
