@@ -29,6 +29,7 @@ export class UsersService {
   }
 
   findOneUserById(id: number) {
+    if (!id) return null;
     // can find entities with any properties that it has
     // to search by id, just passing id is enough
     // to search by other properties, { property: "value" } format should be passed

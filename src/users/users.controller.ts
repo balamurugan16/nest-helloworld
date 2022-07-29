@@ -8,12 +8,14 @@ import {
   Body,
   Controller,
   Delete,
+  ForbiddenException,
   Get,
   NotFoundException,
   Param,
   Patch,
   Post,
   Query,
+  Session,
 } from '@nestjs/common';
 
 @Controller('auth')
@@ -24,14 +26,41 @@ export class UsersController {
     private authService: AuthService,
   ) {}
 
+  @Get('/whoami')
+  async whoAmI(@Session() session: any) {
+    const user = await this.usersService.findOneUserById(session.userId);
+    if (!user) throw new ForbiddenException('You are not authenticated');
+    return user;
+  }
+
+  /*
+  There are 2 cookie-session related headers: Cookie and Set-Cookie which contains an encrypted string as value
+  Set-Cookie will be returned by the server to create a session for the user
+  Cookie will be sent by the client which will be sent as a header to the server.
+  */
   @Post('/signup')
-  createUser(@Body() body: CreateUserDTO) {
-    this.authService.signup(body.email, body.password);
+  async createUser(@Body() body: CreateUserDTO, @Session() session: any) {
+    const user = await this.authService.signup(body.email, body.password);
+    /*
+    here the session will be set and SetCookie will be returned as header to the client.
+    */
+    session.userId = user.id;
+    return user;
   }
 
   @Post('/signin')
-  signin(@Body() body: CreateUserDTO) {
-    return this.authService.signin(body.email, body.password);
+  async signin(@Body() body: CreateUserDTO, @Session() session: any) {
+    const user = await this.authService.signin(body.email, body.password);
+    /*
+    If the session is the same as before, then set-cookie header will not be sent back.
+    */
+    session.userId = user.id;
+    return user;
+  }
+
+  @Post('/signout')
+  async signout(@Session() session: any) {
+    session.userId = null;
   }
 
   @Get('all-users')

@@ -1,6 +1,9 @@
 ### get user by id
 GET http://localhost:3000/auth/2
 
+### who am i
+GET http://localhost:3000/auth/whoami
+
 ### get users by email
 GET http://localhost:3000/auth?email=bala@gmail.com
 
@@ -15,6 +18,18 @@ Content-Type: application/json
   "email": "sudha@gmail.com",
   "password": "sudha"
 }
+
+### signin users
+POST http://localhost:3000/auth/signin
+Content-Type: application/json
+
+{
+  "email": "sudha@gmail.com",
+  "password": "sudha"
+}
+
+### signout user
+POST http://localhost:3000/auth/signout
 
 ### update user
 PATCH  http://localhost:3000/auth/2
