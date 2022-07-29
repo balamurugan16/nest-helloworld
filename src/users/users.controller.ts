@@ -1,14 +1,8 @@
-import { AuthService } from './auth.service';
-import { UserDTO } from './dtos/user.dto';
-import { Serialize } from './../interceptors/serialize.interceptor';
-import { UpdateUserDTO } from './dtos/update-user.dto';
-import { UsersService } from './users.service';
-import { CreateUserDTO } from './dtos/create-user.dto';
+import { AuthGuard } from './../guards/auth.guard';
 import {
   Body,
   Controller,
   Delete,
-  ForbiddenException,
   Get,
   NotFoundException,
   Param,
@@ -16,8 +10,18 @@ import {
   Post,
   Query,
   Session,
+  UseGuards,
 } from '@nestjs/common';
+import { CurrentUser } from './decorators/current-user.decorator';
+import { Serialize } from './../interceptors/serialize.interceptor';
+import { AuthService } from './auth.service';
+import { CreateUserDTO } from './dtos/create-user.dto';
+import { UpdateUserDTO } from './dtos/update-user.dto';
+import { UserDTO } from './dtos/user.dto';
+import { UsersService } from './users.service';
+import { User } from './user.entity';
 
+// @UseInterceptors(CurrentUserInterceptor) // this way is controller scoped. Applies to this controller only.
 @Controller('auth')
 @Serialize(UserDTO)
 export class UsersController {
@@ -26,10 +30,15 @@ export class UsersController {
     private authService: AuthService,
   ) {}
 
+  // @Get('/whoami')
+  // async whoAmI(@Session() session: any) {
+  //   const user = await this.usersService.findOneUserById(session.userId);
+  //   if (!user) throw new ForbiddenException('You are not authenticated');
+  //   return user;
+  // }
   @Get('/whoami')
-  async whoAmI(@Session() session: any) {
-    const user = await this.usersService.findOneUserById(session.userId);
-    if (!user) throw new ForbiddenException('You are not authenticated');
+  @UseGuards(AuthGuard)
+  async whoAmI(@CurrentUser() user: User) {
     return user;
   }
 
