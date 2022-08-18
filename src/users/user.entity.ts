@@ -1,3 +1,4 @@
+import { Report } from './../reports/reports.entity';
 // import { Exclude } from 'class-transformer';
 import {
   Entity,
@@ -6,6 +7,7 @@ import {
   AfterInsert,
   AfterUpdate,
   AfterRemove,
+  OneToMany,
 } from 'typeorm';
 
 @Entity()
@@ -20,6 +22,12 @@ export class User {
   // @Exclude()
   @Column()
   password: string;
+
+  @Column({ default: true })
+  isAdmin: boolean;
+
+  @OneToMany(() => Report, (report) => report.user)
+  reports: Report[];
 
   /**
    * lifecycle hooks in TypeOrm

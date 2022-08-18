@@ -17,6 +17,6 @@ async function bootstrap() {
   //     whitelist: true, // strips off extra properties in JSON request body
   //   }),
   // );
-  await app.listen(3000);
+  await app.listen(process.env.PORT || 3000);
 }
 bootstrap();

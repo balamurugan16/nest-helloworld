@@ -1,7 +1,8 @@
-import { Module } from '@nestjs/common';
-import { APP_INTERCEPTOR } from '@nestjs/core';
+import { CurrentUserMiddleware } from './../middlewares/current-user.middleware';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
+// import { APP_INTERCEPTOR } from '@nestjs/core';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { CurrentUserInterceptor } from './../interceptors/current-user.interceptor';
+// import { CurrentUserInterceptor } from './../interceptors/current-user.interceptor';
 import { AuthService } from './auth.service';
 import { User } from './user.entity';
 import { UsersController } from './users.controller';
@@ -36,10 +37,14 @@ import { UsersService } from './users.service';
     // and when needed the value of CurrentUserInterceptor will be provided in this place
     // downside is for controllers which doesn't need this interceptor, still this interceptor will be applied
     // this is a overfetching issue.
-    {
-      provide: APP_INTERCEPTOR,
-      useClass: CurrentUserInterceptor,
-    },
+    // {
+    //   provide: APP_INTERCEPTOR,
+    //   useClass: CurrentUserInterceptor,
+    // },
   ],
 })
-export class UsersModule {}
+export class UsersModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(CurrentUserMiddleware).forRoutes('*');
+  }
+}
